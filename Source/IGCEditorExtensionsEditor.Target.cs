@@ -9,6 +9,6 @@ public class IGCEditorExtensionsEditorTarget : TargetRules
 	{
 		Type = TargetType.Editor;
 
-		ExtraModuleNames.AddRange( new string[] { "IGCEditorExtensions" } );
+		ExtraModuleNames.AddRange( new string[] { "IGCEditorExtensions", "IGCEditorExtensionsEditor" } );
 	}
 }

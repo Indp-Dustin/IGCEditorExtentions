@@ -8,6 +8,11 @@
 			"Name": "IGCEditorExtensions",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "IGCEditorExtensionsEditor",
+			"Type": "Editor",
+			"LoadingPhase": "Default"
 		}
 	]
 }
