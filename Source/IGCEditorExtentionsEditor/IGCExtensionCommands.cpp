@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "IGCExtensionCommands.h"
+#include "IGCEditor.h"
+#include "IGC.h"
 
 #define LOCTEXT_NAMESPACE "IGCCommand"
 
@@ -24,7 +26,8 @@ void FIGCExtensionActions::Action2()
 
 void FIGCExtensionActions::Action3()
 {
-	FMessageDialog::Open(EAppMsgType::Ok, LOCTEXT("IGCCommand", "IGC Editor Extension Action 3 Message"));
+	TSharedRef< FIGCEditor > NewIGCEditor(new FIGCEditor());
+	NewIGCEditor->InitIGCEditor(EToolkitMode::Standalone, TSharedPtr<IToolkitHost>(), NewObject<UIGC>());
 }
 
 #undef LOCTEXT_NAMESPACE

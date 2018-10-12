@@ -16,7 +16,8 @@ public class IGCEditorExtensionsEditor : ModuleRules
                 "SlateCore",
                 "Slate",
                 "UnrealEd",
-                "LevelEditor"
+                "LevelEditor",
+                "IGCEditorExtensions"
             }
 		);
 
