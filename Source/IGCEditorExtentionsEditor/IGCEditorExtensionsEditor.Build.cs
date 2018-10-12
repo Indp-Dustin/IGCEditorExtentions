@@ -12,8 +12,12 @@ public class IGCEditorExtensionsEditor : ModuleRules
 			new string[] 
 			{ 
 				"Core", 
-				"CoreUObject"
-			}
+				"CoreUObject",
+                "SlateCore",
+                "Slate",
+                "UnrealEd",
+                "LevelEditor"
+            }
 		);
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
