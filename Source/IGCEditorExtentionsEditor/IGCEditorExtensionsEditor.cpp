@@ -2,6 +2,7 @@
 
 #include "IGCEditorExtensionsEditor.h"
 #include "IGCExtensionCommands.h"
+#include "IGCExtensionStyle.h"
 
 #include "Framework/MultiBox/MultiBoxExtender.h"
 #include "Framework/MultiBox/MultiBoxBuilder.h"
@@ -13,6 +14,10 @@ IMPLEMENT_MODULE( FIGCEditorExtensionsEditor, "IGCEditorExtensionsEditor" );
 
 void FIGCEditorExtensionsEditor::StartupModule()
 {
+	// 스타일 등록.
+	FIGCExtensionStyle::Initialize();
+	FIGCExtensionStyle::ReloadTextures();
+
 	// 커맨드 등록.
 	FIGCExtensionCommands::Register();
 
@@ -80,10 +85,14 @@ void FIGCEditorExtensionsEditor::StartupModule()
 		{
 			ToolbarBuilder.BeginSection("IGCToolbar");
 			{
-				ToolbarBuilder.AddToolBarButton(FIGCExtensionCommands::Get().Command1);
-				ToolbarBuilder.AddToolBarButton(FIGCExtensionCommands::Get().Command2);
-				ToolbarBuilder.AddToolBarButton(FIGCExtensionCommands::Get().Command3);
-				ToolbarBuilder.AddToolBarButton(FIGCExtensionCommands::Get().Command4);
+				ToolbarBuilder.AddToolBarButton(FIGCExtensionCommands::Get().Command1, 
+					NAME_None, TAttribute<FText>(), TAttribute<FText>(), FSlateIcon(FIGCExtensionStyle::GetStyleSetName(), "IGCToolbarIcon.Command1"), NAME_None);
+				ToolbarBuilder.AddToolBarButton(FIGCExtensionCommands::Get().Command2,
+					NAME_None, TAttribute<FText>(), TAttribute<FText>(), FSlateIcon(FIGCExtensionStyle::GetStyleSetName(), "IGCToolbarIcon.Command2"), NAME_None);
+				ToolbarBuilder.AddToolBarButton(FIGCExtensionCommands::Get().Command3,
+					NAME_None, TAttribute<FText>(), TAttribute<FText>(), FSlateIcon(FIGCExtensionStyle::GetStyleSetName(), "IGCToolbarIcon.Command3"), NAME_None);
+				ToolbarBuilder.AddToolBarButton(FIGCExtensionCommands::Get().Command4,
+					NAME_None, TAttribute<FText>(), TAttribute<FText>(), FSlateIcon(FIGCExtensionStyle::GetStyleSetName(), "IGCToolbarIcon.Command4"), NAME_None);
 			}
 			ToolbarBuilder.EndSection();
 		}
@@ -103,6 +112,8 @@ void FIGCEditorExtensionsEditor::ShutdownModule()
 	// 커맨드 등록 해제.
 	FIGCExtensionCommands::Unregister();
 
+	// 스타일 등록 해제.
+	FIGCExtensionStyle::Shutdown();
 }
 
 #undef LOCTEXT_NAMESPACE

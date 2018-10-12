@@ -4,12 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "Framework/Commands/Commands.h"
+#include "IGCExtensionStyle.h"
 
 class FIGCExtensionCommands : public TCommands<FIGCExtensionCommands>
 {
 public:
 	FIGCExtensionCommands()
-		: TCommands<FIGCExtensionCommands>(TEXT("IGCExtensions"), NSLOCTEXT("IGCExtensions", "IGCExtensions", "IGCExtensions"), NAME_None, TEXT("Default"))
+		: TCommands<FIGCExtensionCommands>(TEXT("IGCExtensions"), 
+			NSLOCTEXT("IGCExtensions", "IGCExtensions", "IGCExtensions"), 
+			NAME_None, 
+			FIGCExtensionStyle::GetStyleSetName())
 	{
 	}
 
@@ -21,6 +25,8 @@ public:
 	TSharedPtr< FUICommandInfo > Command3;
 	TSharedPtr< FUICommandInfo > Command4;
 };
+
+
 
 class FIGCExtensionActions
 {
