@@ -28,7 +28,8 @@ public:
 	}
 
 private:
-	// 에디터가 사용할 고유 앱 이름.
+	// IGC 에디터가 사용할 고유한 앱의 명칭.
 	static const FName IGCEditorAppIdentifier;
+
 };
 

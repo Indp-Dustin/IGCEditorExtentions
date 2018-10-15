@@ -3,9 +3,6 @@
 #include "IGCEditor.h"
 #include "IGC.h"
 
-#include "IGCExtensionStyle.h"
-#include "PropertyEditorModule.h"
-
 const FName FIGCEditor::IGCEditorAppIdentifier = FName(TEXT("IGCEditorApp"));
 
 #define LOCTEXT_NAMESPACE "IGCEditor"
