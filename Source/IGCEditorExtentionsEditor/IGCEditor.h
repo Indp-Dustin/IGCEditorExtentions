@@ -29,6 +29,7 @@ public:
 private:
 	TSharedRef<SDockTab> SpawnTab_Viewport(const FSpawnTabArgs& Args);
 	TSharedRef<SDockTab> SpawnTab_Detail(const FSpawnTabArgs& Args);
+	TSharedRef<SDockTab> SpawnTab_PreviewSceneSettings(const FSpawnTabArgs& Args);
 
 private:
 	// IGC 에디터가 사용할 고유한 앱의 명칭.
@@ -37,6 +38,7 @@ private:
 	// 각 Tab이 사용할 고유 명칭.
 	static const FName ViewportTabId;
 	static const FName DetailTabId;
+	static const FName PreviewSceneSettingsTabId;
 
 	// 디테일 뷰.
 	TSharedPtr<class IDetailsView> DetailsView;
@@ -46,5 +48,8 @@ private:
 
 	// 편집할 IGC 오브젝트
 	class UIGC* IGCObject;
+
+	// 프리뷰 씬 세팅 위젯.
+	TSharedPtr<SWidget> AdvancedPreviewSettingsWidget;
 };
 

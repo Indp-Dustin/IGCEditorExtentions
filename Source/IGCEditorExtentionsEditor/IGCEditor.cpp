@@ -6,10 +6,12 @@
 #include "SIGCViewport.h"
 
 #include "PropertyEditorModule.h"
+#include "AdvancedPreviewSceneModule.h"
 
 const FName FIGCEditor::IGCEditorAppIdentifier = FName(TEXT("IGCEditorApp"));
 const FName FIGCEditor::ViewportTabId = FName(TEXT("IGC Viewport"));
 const FName FIGCEditor::DetailTabId = FName(TEXT("IGC Detail"));
+const FName FIGCEditor::PreviewSceneSettingsTabId = FName(TEXT("IGC PreviewScene Setting"));
 
 #define LOCTEXT_NAMESPACE "IGCEditor"
 
@@ -28,9 +30,14 @@ void FIGCEditor::InitIGCEditor(const EToolkitMode::Type Mode, const TSharedPtr<c
 	const FDetailsViewArgs DetailsViewArgs(bIsUpdatable, bIsLockable, true, FDetailsViewArgs::ObjectsUseNameArea, false);
 	DetailsView = PropertyEditorModule.CreateDetailView(DetailsViewArgs);
 
+	// 뷰포트 생성.
 	Viewport = SNew(SIGCViewport)
 		.ParentIGCEditor(SharedThis(this))
 		.ObjectToEdit(IGCObject);
+
+	// 프리뷰 씬 세팅 위젯.
+	FAdvancedPreviewSceneModule& AdvancedPreviewSceneModule = FModuleManager::LoadModuleChecked<FAdvancedPreviewSceneModule>("AdvancedPreviewScene");
+	AdvancedPreviewSettingsWidget = AdvancedPreviewSceneModule.CreateAdvancedPreviewSceneSettingsWidget(Viewport->GetPreviewScene());
 
 	// 툴바가 들어갈 기본 레이아웃 설계.
 	const TSharedRef<FTabManager::FLayout> EditorDefaultLayout = FTabManager::NewLayout("IGCEditor_Layout_v2")
@@ -41,7 +48,7 @@ void FIGCEditor::InitIGCEditor(const EToolkitMode::Type Mode, const TSharedPtr<c
 			(
 				FTabManager::NewStack()
 				->SetSizeCoefficient(0.1f)
-				->AddTab(GetToolbarTabId(), ETabState::OpenedTab)->SetHideTabWell(true)
+				->AddTab(GetToolbarTabId(), ETabState::OpenedTab)
 			)
 			->Split
 			(
@@ -50,12 +57,22 @@ void FIGCEditor::InitIGCEditor(const EToolkitMode::Type Mode, const TSharedPtr<c
 				(
 					FTabManager::NewStack()
 					->SetSizeCoefficient(0.6)
-					->AddTab(ViewportTabId, ETabState::OpenedTab)->SetHideTabWell(true)
+					->AddTab(ViewportTabId, ETabState::OpenedTab)
 				)
 				->Split
 				(
-					FTabManager::NewStack()
-					->AddTab(DetailTabId, ETabState::OpenedTab)
+					FTabManager::NewSplitter()->SetOrientation(Orient_Vertical)
+					->Split
+					(
+						FTabManager::NewStack()
+						->SetSizeCoefficient(0.4f)
+						->AddTab(DetailTabId, ETabState::OpenedTab)
+					)
+					->Split
+					(
+						FTabManager::NewStack()
+						->AddTab(PreviewSceneSettingsTabId, ETabState::OpenedTab)
+					)
 				)
 			)
 		);
@@ -70,11 +87,13 @@ void FIGCEditor::InitIGCEditor(const EToolkitMode::Type Mode, const TSharedPtr<c
 	{
 		DetailsView->SetObject(IGCObject);
 	}
+
 }
 
 FIGCEditor::~FIGCEditor()
 {
 	DetailsView.Reset();
+	AdvancedPreviewSettingsWidget.Reset();
 }
 
 TSharedRef<SDockTab> FIGCEditor::SpawnTab_Viewport(const FSpawnTabArgs& Args)
@@ -95,6 +114,15 @@ TSharedRef<SDockTab> FIGCEditor::SpawnTab_Detail(const FSpawnTabArgs& Args)
 		];
 }
 
+TSharedRef<SDockTab> FIGCEditor::SpawnTab_PreviewSceneSettings(const FSpawnTabArgs& Args)
+{
+	check(Args.GetTabId() == PreviewSceneSettingsTabId);
+	return SNew(SDockTab)
+		[
+			AdvancedPreviewSettingsWidget.ToSharedRef()
+		];
+}
+
 void FIGCEditor::RegisterTabSpawners(const TSharedRef<class FTabManager>& TabManager)
 {
 	WorkspaceMenuCategory = TabManager->AddLocalWorkspaceMenuCategory(LOCTEXT("WorkspaceMenu_IGCAssetEditor", "IGC Asset Editor"));
@@ -109,6 +137,11 @@ void FIGCEditor::RegisterTabSpawners(const TSharedRef<class FTabManager>& TabMan
 	TabManager->RegisterTabSpawner(DetailTabId, FOnSpawnTab::CreateSP(this, &FIGCEditor::SpawnTab_Detail))
 		.SetGroup(WorkspaceMenuCategoryRef)
 		.SetIcon(FSlateIcon(FIGCExtensionStyle::GetStyleSetName(), "IGCExtensions.Command2"));
+
+	TabManager->RegisterTabSpawner(PreviewSceneSettingsTabId, FOnSpawnTab::CreateSP(this, &FIGCEditor::SpawnTab_PreviewSceneSettings))
+		.SetDisplayName(LOCTEXT("PreviewSceneTab", "Preview Scene Settings"))
+		.SetGroup(WorkspaceMenuCategoryRef)
+		.SetIcon(FSlateIcon(FIGCExtensionStyle::GetStyleSetName(), "IGCExtensions.Command3"));
 }
 
 void FIGCEditor::UnregisterTabSpawners(const TSharedRef<class FTabManager>& TabManager)
@@ -117,6 +150,7 @@ void FIGCEditor::UnregisterTabSpawners(const TSharedRef<class FTabManager>& TabM
 
 	TabManager->UnregisterTabSpawner(ViewportTabId);
 	TabManager->UnregisterTabSpawner(DetailTabId);
+	TabManager->UnregisterTabSpawner(PreviewSceneSettingsTabId);
 }
 
 FName FIGCEditor::GetToolkitFName() const
