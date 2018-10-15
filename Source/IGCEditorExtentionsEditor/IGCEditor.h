@@ -42,6 +42,9 @@ private:
 	// 디테일 뷰.
 	TSharedPtr< class IDetailsView > DetailsView;
 
+	// 프리뷰 위젯
+	TSharedPtr<class SIGCViewport> Viewport;
+
 	// 편집할 IGC 오브젝트
 	class UIGC* IGCObject;
 };

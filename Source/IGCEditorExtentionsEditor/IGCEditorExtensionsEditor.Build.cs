@@ -17,7 +17,9 @@ public class IGCEditorExtensionsEditor : ModuleRules
                 "Slate",
                 "UnrealEd",
                 "LevelEditor",
-                "IGCEditorExtensions"
+                "IGCEditorExtensions",
+                "Engine",
+                "AdvancedPreviewScene"
             }
 		);
 
