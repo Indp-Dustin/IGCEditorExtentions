@@ -28,8 +28,15 @@ public:
 	}
 
 private:
+	TSharedRef<SDockTab> SpawnTab_Viewport(const FSpawnTabArgs& Args);
+	TSharedRef<SDockTab> SpawnTab_Detail(const FSpawnTabArgs& Args);
+
+private:
 	// IGC 에디터가 사용할 고유한 앱의 명칭.
 	static const FName IGCEditorAppIdentifier;
 
+	// 각 Tab이 사용할 고유 명칭.
+	static const FName ViewportTabId;
+	static const FName DetailTabId;
 };
 
