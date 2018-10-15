@@ -6,7 +6,6 @@
 #include "SIGCViewport.h"
 
 #include "PropertyEditorModule.h"
-#include "AdvancedPreviewSceneModule.h"
 
 const FName FIGCEditor::IGCEditorAppIdentifier = FName(TEXT("IGCEditorApp"));
 const FName FIGCEditor::ViewportTabId = FName(TEXT("IGC Viewport"));

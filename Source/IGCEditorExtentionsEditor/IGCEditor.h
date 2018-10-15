@@ -5,7 +5,6 @@
 #include "Toolkits/AssetEditorToolkit.h"
 #include "Toolkits/IToolkitHost.h"
 
-
 class FIGCEditor : public FAssetEditorToolkit
 {
 public:
@@ -40,7 +39,7 @@ private:
 	static const FName DetailTabId;
 
 	// µðÅ×ÀÏ ºä.
-	TSharedPtr< class IDetailsView > DetailsView;
+	TSharedPtr<class IDetailsView> DetailsView;
 
 	// ÇÁ¸®ºä À§Á¬
 	TSharedPtr<class SIGCViewport> Viewport;
