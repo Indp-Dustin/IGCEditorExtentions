@@ -4,6 +4,8 @@
 #include "IGC.h"
 #include "IGCExtensionStyle.h"
 
+#include "PropertyEditorModule.h"
+
 const FName FIGCEditor::IGCEditorAppIdentifier = FName(TEXT("IGCEditorApp"));
 const FName FIGCEditor::ViewportTabId = FName(TEXT("IGC Viewport"));
 const FName FIGCEditor::DetailTabId = FName(TEXT("IGC Detail"));
@@ -12,8 +14,20 @@ const FName FIGCEditor::DetailTabId = FName(TEXT("IGC Detail"));
 
 void FIGCEditor::InitIGCEditor(const EToolkitMode::Type Mode, const TSharedPtr<class IToolkitHost>& InitToolkitHost, UIGC * InIGC)
 {
-	// 툴바가 들어갈 기본 레이아웃 설계.
+	// 편집하기 위해 들어온 IGC 객체의 설정.
+	InIGC->SetFlags(RF_Transactional); // Undo, Redo의 지원.
+	IGCObject = InIGC;
 
+	// 프로퍼티에디터 모듈을 가져와서 디테일 뷰를 생성.
+	const bool bIsUpdatable = false;
+	const bool bAllowFavorites = true;
+	const bool bIsLockable = false;
+
+	FPropertyEditorModule& PropertyEditorModule = FModuleManager::GetModuleChecked<FPropertyEditorModule>("PropertyEditor");
+	const FDetailsViewArgs DetailsViewArgs(bIsUpdatable, bIsLockable, true, FDetailsViewArgs::ObjectsUseNameArea, false);
+	DetailsView = PropertyEditorModule.CreateDetailView(DetailsViewArgs);
+
+	// 툴바가 들어갈 기본 레이아웃 설계.
 	const TSharedRef<FTabManager::FLayout> EditorDefaultLayout = FTabManager::NewLayout("IGCEditor_Layout_v2")
 		->AddArea
 		(
@@ -46,10 +60,16 @@ void FIGCEditor::InitIGCEditor(const EToolkitMode::Type Mode, const TSharedPtr<c
 	const bool bCreateDefaultToolbar = true;
 	FAssetEditorToolkit::InitAssetEditor(Mode, InitToolkitHost, IGCEditorAppIdentifier, EditorDefaultLayout, bCreateDefaultStandaloneMenu, bCreateDefaultToolbar, InIGC);
 
+	// 디테일 뷰에 IGC 객체를 지정.
+	if (DetailsView.IsValid())
+	{
+		DetailsView->SetObject(IGCObject);
+	}
 }
 
 FIGCEditor::~FIGCEditor()
 {
+	DetailsView.Reset();
 }
 
 TSharedRef<SDockTab> FIGCEditor::SpawnTab_Viewport(const FSpawnTabArgs& Args)
@@ -61,7 +81,10 @@ TSharedRef<SDockTab> FIGCEditor::SpawnTab_Viewport(const FSpawnTabArgs& Args)
 TSharedRef<SDockTab> FIGCEditor::SpawnTab_Detail(const FSpawnTabArgs& Args)
 {
 	check(Args.GetTabId() == DetailTabId);
-	return SNew(SDockTab);
+	return SNew(SDockTab)
+		[
+			DetailsView.ToSharedRef() 
+		];
 }
 
 void FIGCEditor::RegisterTabSpawners(const TSharedRef<class FTabManager>& TabManager)

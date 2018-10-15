@@ -38,5 +38,11 @@ private:
 	// 각 Tab이 사용할 고유 명칭.
 	static const FName ViewportTabId;
 	static const FName DetailTabId;
+
+	// 디테일 뷰.
+	TSharedPtr< class IDetailsView > DetailsView;
+
+	// 편집할 IGC 오브젝트
+	class UIGC* IGCObject;
 };
 
